@@ -1,17 +1,11 @@
 class Model {
     constructor() {
-        this.todos = [
-            {
-                id: 1,
-                text: 'Plant the tulipanes',
-                complete: false,
-            },
-            {
-                id: 2,
-                text: 'Prepare the dinner',
-                complete: false,
-            },
-        ];
+        this.todos = JSON.parse(localStorage.getItem('todos')) || [];
+    }
+
+    _commit(todos) {
+        this.onTodoListChanged(todos);
+        localStorage.setItem('todos', JSON.stringify(todos));
     }
 
     addTodo(todoText) {
@@ -23,7 +17,7 @@ class Model {
 
         this.todos.push(todo);
 
-        this.onTodoListChanged(this.todos);
+        this._commit(this.todos);
     }
 
     editTodo(id, newText) {
@@ -31,13 +25,13 @@ class Model {
             todo.id === id ? { id: todo.id, text: newText, complete: todo.complete } : todo
         );
 
-        this.onTodoListChanged(this.todos);
+        this._commit(this.todos);
     }
 
     deleteTodo(id) {
         this.todos = this.todos.filter(todo => todo.id !== id);
 
-        this.onTodoListChanged(this.todos);
+        this._commit(this.todos);
     }
 
     toggleTodo(id) {
@@ -45,7 +39,7 @@ class Model {
             todo.id === id ? { id: todo.id, text: todo.text, complete: !todo.complete } : todo
         );
 
-        this.onTodoListChanged(this.todos);
+        this._commit(this.todos);
     }
 
     bindTodoListChanged(callback) {
