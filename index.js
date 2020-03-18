@@ -30,6 +30,10 @@ class Model {
         );
     }
 
+    deleteTodo(id) {
+        this.todos = this.todos.filter(todo => todo.id !== id);
+    }
+
     toggleTodo(id) {
         this.todos = this.todos.map(todo =>
             todo.id === id ? { id: todo.id, text: todo.text, complete: !todo.complete } : todo
@@ -122,6 +126,40 @@ class View {
                 this.todoList.append(li);
             });
         }
+
+        console.table(todos);
+    }
+
+    bindAddTodo(handler) {
+        this.form.addEventListener('subtim', event => {
+            event.preventDefault();
+
+            if (this._todoText) {
+                handler(this._todoText);
+                this._resetInput();
+            }
+        })
+    }
+
+    bindDeleteTodo(handler) {
+        this.todoList.addEventListener('click', event => {
+            if (event.target.className === 'delete') {
+                const id = parseInt(event.target.parentElement.id);
+
+                handler(id);
+            }
+        })
+    }
+
+    bindToggleTodo(handler) {
+        this.todoList.addEventListener('change', event => {
+            if (event.target.type === 'checkbox') {
+                const id = parseInt(event.target.parentElement.id);
+
+                handler(id);
+
+            }
+        })
     }
 
 }
@@ -130,6 +168,32 @@ class Controller {
     constructor(model, view) {
         this.model = model;
         this.view = view;
+
+        this.onTodoListChanged(this.model.todos);
+        this.view.bindAddTodo(this.handleAddTodo);
+        this.view.bindDeleteTodo(this.handleDeleteTodo);
+        this.view.bindToggleTodo(this.handleToggleTodo);
+        // this.view.bindEditTodo(this.handleEditTodo);
+    }
+
+    onTodoListChanged = todos => {
+        this.view.displayTodos(todos);
+    }
+
+    handleAddTodo = todoText => {
+        this.model.addTodo(todoText);
+    }
+
+    handleEditTodo = (id, todoText) => {
+        this.model.editTodo(id, todoText);
+    }
+
+    handleDeleteTodo = id => {
+        this.model.deleteTodo(id);
+    }
+
+    handleToggleTodo = id => {
+        this.model.toggleTodo(id);
     }
 }
 
