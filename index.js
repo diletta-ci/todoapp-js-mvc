@@ -85,7 +85,43 @@ class View {
     }
 
     displayTodos(todos) {
-        // TODO: update view
+        while (this.todoList.firstChild) {
+            this.todoList.removeChild(this.todoList.firstChild);
+        }
+
+        if (todos.length === 0) {
+            const paragraph = this.createElement('p');
+            paragraph.textContent = 'Nothing to do! Add a task?';
+
+            this.todoList.append(paragraph);
+        } else {
+            todos.forEach((todo) => {
+                const li = this.createElement('li');
+                li.id = todo.id;
+
+                const checkbox = this.createElement('input');
+                checkbox.type = 'checkbox';
+                checkbox.checked = todo.complete;
+
+                const span = this.createElement('span');
+                span.contentEditable = true;
+                span.classList.add('editable');
+
+                if (todo.complete) {
+                    const strike = this.createElement('s');
+                    strike.textContent = todo.text;
+                    span.append(strike);
+                } else {
+                    span.textContent = todo.text;
+                }
+
+                const deleteButton = this.createElement('button', 'delete');
+                deleteButton.textContent = 'Delete';
+                li.append(checkbox, span, deleteButton);
+
+                this.todoList.append(li);
+            });
+        }
     }
 
 }
