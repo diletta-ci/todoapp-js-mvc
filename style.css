@@ -1,0 +1,48 @@
+:root {
+    --grape: #94618E;
+    --eggplant: #49274A;
+    --sand: #F4DECB;
+    --shell: #F8EEE7;
+    --grey: #585148;
+    --white: #fff2fe;
+}
+
+/* Reset */
+html,
+body {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+    height: 100%;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+*,
+*:before,
+*:after {
+    -webkit-box-sizing: inherit;
+    -moz-box-sizing: inherit;
+    box-sizing: inherit;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box
+}
+
+html {
+    font-size: 62.5%;
+}
+
+body {
+    position: relative;
+    font-size: 1.4rem;
+    background-color: var(--shell);
+    color: var(--grey);
+}
