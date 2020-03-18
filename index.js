@@ -22,22 +22,34 @@ class Model {
         };
 
         this.todos.push(todo);
+
+        this.onTodoListChanged(this.todos);
     }
 
     editTodo(id, newText) {
         this.todos = this.todos.map(todo =>
             todo.id === id ? { id: todo.id, text: newText, complete: todo.complete } : todo
         );
+
+        this.onTodoListChanged(this.todos);
     }
 
     deleteTodo(id) {
         this.todos = this.todos.filter(todo => todo.id !== id);
+
+        this.onTodoListChanged(this.todos);
     }
 
     toggleTodo(id) {
         this.todos = this.todos.map(todo =>
             todo.id === id ? { id: todo.id, text: todo.text, complete: !todo.complete } : todo
         );
+
+        this.onTodoListChanged(this.todos);
+    }
+
+    bindTodoListChanged(callback) {
+        this.onTodoListChanged = callback;
     }
 }
 
@@ -131,7 +143,7 @@ class View {
     }
 
     bindAddTodo(handler) {
-        this.form.addEventListener('subtim', event => {
+        this.form.addEventListener('submit', event => {
             event.preventDefault();
 
             if (this._todoText) {
@@ -157,7 +169,6 @@ class View {
                 const id = parseInt(event.target.parentElement.id);
 
                 handler(id);
-
             }
         })
     }
@@ -169,11 +180,14 @@ class Controller {
         this.model = model;
         this.view = view;
 
-        this.onTodoListChanged(this.model.todos);
+        this.model.bindTodoListChanged(this.onTodoListChanged);
+
         this.view.bindAddTodo(this.handleAddTodo);
         this.view.bindDeleteTodo(this.handleDeleteTodo);
         this.view.bindToggleTodo(this.handleToggleTodo);
         // this.view.bindEditTodo(this.handleEditTodo);
+
+        this.onTodoListChanged(this.model.todos);
     }
 
     onTodoListChanged = todos => {
